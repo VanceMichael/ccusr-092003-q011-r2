@@ -1,0 +1,19 @@
+{
+  "schema_version": "1",
+  "domain": "东盟AI项目本地验收",
+  "required_fields": [
+    "project_ref",
+    "institution_ref",
+    "system_revision",
+    "milestone_ref",
+    "evidence_digest",
+    "decision"
+  ],
+  "time_format": "ISO 8601 with offset",
+  "sample": {
+    "project_ref": "PROJECT-DEMO",
+    "institution_ref": "PARTNER-A",
+    "system_revision": 3,
+    "decision": "pending"
+  }
+}
