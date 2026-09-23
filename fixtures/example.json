@@ -1,6 +1,79 @@
 {
-  "project_ref": "PROJECT-DEMO",
-  "institution_ref": "PARTNER-A",
-  "system_revision": 3,
-  "decision": "pending"
+  "project": {
+    "project_id": "PROJECT-DEMO",
+    "title": "泰国智慧交通本地验收（脱敏示例）"
+  },
+  "local_institution_registers": {
+    "baseline": {
+      "baseline_id": "BL-1",
+      "requirements": {
+        "language": "th",
+        "must_work_offline": true,
+        "accuracy_target": 0.95,
+        "latency_ms_max": 300
+      }
+    },
+    "environment": {
+      "note_id": "ENV-1",
+      "languages": ["th", "en"],
+      "network": {"uplink_mbps": 4, "outage_tolerated": true},
+      "infrastructure": {"edge_nodes": 2, "camera_model": "local-A"}
+    },
+    "data_summary": {
+      "summary_id": "DS-1",
+      "dataset_ref": "BKK-TRANSIT-2026-09",
+      "digest": "REPLACE_WITH_64_HEX_SHA256_OF_LOCAL_DATASET",
+      "row_count": 100000,
+      "schema_note": {"fields": ["trip_count", "hour"], "pii": "none"}
+    }
+  },
+  "supplier_registers": {
+    "version": {
+      "version_id": "V-3",
+      "revision": 3,
+      "label": "edge-1.3",
+      "release_note": "针对泰语分词与弱网回退的修订"
+    },
+    "claim": {
+      "claim_id": "CLAIM-3",
+      "version_id": "V-3",
+      "scope": "曼谷试点路口",
+      "languages": ["th"],
+      "network_conditions": {"min_uplink_mbps": 2, "tolerates_outage": true},
+      "infrastructure_conditions": {"edge_nodes": 2},
+      "limitations": "离线超过 24 小时需人工同步"
+    }
+  },
+  "milestone": {
+    "milestone_id": "FA-1",
+    "milestone_ref": "FA-1",
+    "title": "正式验收：泰语路口识别",
+    "stage": "formal_acceptance"
+  },
+  "agreed_metrics": [
+    {"metric_id": "M-ACC", "metric_key": "accuracy", "name": "泰语场景准确率",
+     "comparison": "gte", "threshold": 0.95, "unit": "ratio"},
+    {"metric_id": "M-LAT", "metric_key": "latency_ms", "name": "端到端延迟",
+     "comparison": "lte", "threshold": 300, "unit": "ms"}
+  ],
+  "round": {"round_id": "R-2", "revision": 3},
+  "passing_conclusion": {
+    "conclusion_id": "C-2",
+    "measurements": {"accuracy": 0.96, "latency_ms": 210},
+    "signatures": [
+      {"party_id": "PARTNER-A", "signature_algorithm": "ed25519",
+       "signature_value": "REPLACE_WITH_LOCAL_INSTITUTION_SIGNATURE",
+       "signed_payload_digest": "REPLACE_WITH_64_HEX_SHA256"},
+      {"party_id": "SUPPLIER-X", "signature_algorithm": "ed25519",
+       "signature_value": "REPLACE_WITH_SUPPLIER_SIGNATURE",
+       "signed_payload_digest": "REPLACE_WITH_64_HEX_SHA256"}
+    ]
+  },
+  "evidence": {
+    "evidence_id": "E-2",
+    "title": "第 2 轮现场证据包（留在当地受控存储）",
+    "digest": "REPLACE_WITH_64_HEX_SHA256_OF_EVIDENCE_PACKAGE",
+    "storage_ref": "local-vault://acceptance/PROJECT-DEMO/R-2"
+  },
+  "note": "本文件不含任何真实身份或原始业务记录；digest 字段在真实使用时替换为 64 位十六进制 sha256。"
 }

@@ -1,19 +1,56 @@
 {
-  "schema_version": "1",
+  "schema_version": "2",
   "domain": "东盟AI项目本地验收",
-  "required_fields": [
-    "project_ref",
-    "institution_ref",
-    "system_revision",
-    "milestone_ref",
-    "evidence_digest",
-    "decision"
+  "principles": [
+    "平台不接收原始业务数据，只保存需求基线、环境说明、数据摘要、sha256 摘要与签名结果",
+    "指标须由当地机构与供应方双方确认后才能开启验收轮次",
+    "失败重测另开轮次，历史轮次保留不覆盖",
+    "系统版本升级会使该项目所有进行中的轮次失效（superseded）",
+    "证据摘要只对项目名册内参与方可见",
+    "展品、试点、部署、正式验收四阶段严格分开，演示不等于交付"
   ],
+  "id_format": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+  "digest_algorithm": "sha256",
+  "digest_format": "64 位十六进制字符串",
   "time_format": "ISO 8601 with offset",
+  "roles": ["local_institution", "supplier"],
+  "stages": ["demonstration", "pilot", "deployment", "formal_acceptance"],
+  "round_status": ["open", "passed", "failed", "superseded"],
+  "decision": ["pass", "fail"],
+  "comparisons": ["gte", "lte", "eq"],
+  "endpoints": {
+    "POST /parties": "登记参与方（party_id, role, label, token）",
+    "POST /projects": "当地机构登记项目，自动成为名册成员",
+    "POST /projects/{id}/participants": "把另一方加入项目名册",
+    "POST /projects/{id}/baselines": "当地机构登记需求基线（版本序号自增）",
+    "POST /projects/{id}/environments": "当地机构登记语言、网络、基础设施说明",
+    "POST /projects/{id}/data-summaries": "登记数据摘要：受控引用 + sha256 + 行数 + 抽象字段说明",
+    "POST /projects/{id}/versions": "供应方登记系统版本（revision 必须递增，同时作废旧轮次）",
+    "POST /projects/{id}/claims": "供应方登记适用声明（语言/网络/基础设施范围与限制）",
+    "POST /projects/{id}/milestones": "登记里程碑并指定四阶段之一",
+    "POST /projects/{id}/milestones/{m}/metrics": "约定指标（比较符与阈值）",
+    "POST /projects/{id}/milestones/{m}/metrics/{k}/consent": "任一方确认指标",
+    "POST /projects/{id}/milestones/{m}/rounds": "指标双方确认后开启验收轮次",
+    "POST /projects/{id}/rounds/{r}/conclusion": "提交实测值与签名，自动判定 pass/fail 并封轮",
+    "POST /projects/{id}/evidence": "登记证据摘要（仅 sha256 与受控存储引用）",
+    "GET /projects/{id}": "项目全量视图（仅名册内参与方）",
+    "GET /projects": "我参与的项目列表",
+    "GET /portfolio/combo": "四阶段组合视图",
+    "GET /health": "健康检查"
+  },
+  "conclusion_rules": {
+    "metrics_required": "measurements 必须恰好覆盖该里程碑全部已约定指标",
+    "pass_requires_dual_signatures": "通过结论必须有 local_institution 与 supplier 各一个签名",
+    "fail_signatures": "失败结论允许零签名或单方签名",
+    "closed_rounds": "passed/failed/superseded 轮次不能再提交，需另开新轮"
+  },
   "sample": {
     "project_ref": "PROJECT-DEMO",
     "institution_ref": "PARTNER-A",
     "system_revision": 3,
+    "milestone_ref": "FA-1",
+    "stage": "formal_acceptance",
+    "evidence_digest": "sha256 hex of evidence package kept locally",
     "decision": "pending"
   }
 }
