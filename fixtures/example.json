@@ -1,6 +1,41 @@
 {
-  "project_ref": "PROJECT-DEMO",
-  "institution_ref": "PARTNER-A",
-  "system_revision": 3,
-  "decision": "pending"
+  "project": {
+    "project_ref": "PROJECT-BKK",
+    "name": "曼谷智慧交通试点",
+    "domain": "smart-traffic",
+    "stage": "pilot",
+    "institution_ref": "PARTNER-TH",
+    "supplier_ref": "VENDOR-CN"
+  },
+  "revision": {
+    "version_label": "traffic-ai 2.3.1",
+    "applicability": "支持泰语车牌识别；适用 3G/4G 弱网回传；路侧 RSU 边缘部署"
+  },
+  "baseline": {
+    "requirements": [
+      {"code": "REQ-01", "description": "泰语路况语音播报准确率"},
+      {"code": "REQ-02", "description": "弱网下事件回传时延"}
+    ],
+    "data_summary": {
+      "sample_count": 12000,
+      "time_range": "2026-08-01/2026-08-31",
+      "aggregated_rate": {"peak_hour": 0.87}
+    }
+  },
+  "environment": {
+    "language": "th-TH",
+    "network": "4G 为主，高峰时段丢包率约 6%",
+    "infrastructure": "路侧机柜供电稳定，光纤回传仅覆盖主干道"
+  },
+  "milestone": {"code": "M1", "title": "泰语识别现场验证"},
+  "metric": {"metric_code": "th-acc", "name": "泰语事件识别准确率", "operator": ">=", "threshold": 0.9},
+  "round_open": {"milestone_code": "M1", "base_revision_id": 1},
+  "evidence": {
+    "kind": "test-run-report",
+    "label": "曼谷现场第一轮测试报告",
+    "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "controlled_ref": "BKK-DRDC-2026-09-001"
+  },
+  "conclusion": {"measured": {"th-acc": 0.93}},
+  "note": "全部编号与摘要均为虚构示例，不含真实身份或原始业务数据；原始材料保存在当地受控存储中。"
 }

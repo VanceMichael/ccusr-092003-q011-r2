@@ -1,28 +1,26 @@
 
-import json
 import os
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from http.server import ThreadingHTTPServer
 
-
-class Handler(BaseHTTPRequestHandler):
-    def do_GET(self) -> None:
-        if self.path != "/health":
-            self.send_error(404)
-            return
-        body = json.dumps({"status": "ok"}).encode("utf-8")
-        self.send_response(200)
-        self.send_header("Content-Type", "application/json")
-        self.send_header("Content-Length", str(len(body)))
-        self.end_headers()
-        self.wfile.write(body)
-
-    def log_message(self, format: str, *args: object) -> None:
-        return
+from app.database import connect, migrate
+from app.server import build_handler
+from app.store import Store
 
 
 def main() -> None:
+    database_path = os.getenv("DATABASE_PATH", "data/app.sqlite3")
+    connection = connect(database_path)
+    migrate(connection)
+    store = Store(connection)
     port = int(os.getenv("PORT", "8080"))
-    ThreadingHTTPServer(("0.0.0.0", port), Handler).serve_forever()
+    server = ThreadingHTTPServer(("0.0.0.0", port), build_handler(store))
+    print(f"验收平台已启动：0.0.0.0:{port}（数据库 {database_path}）")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        connection.close()
 
 
 if __name__ == "__main__":

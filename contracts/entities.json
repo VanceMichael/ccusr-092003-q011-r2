@@ -1,19 +1,46 @@
 {
-  "schema_version": "1",
+  "schema_version": "2",
   "domain": "东盟AI项目本地验收",
-  "required_fields": [
-    "project_ref",
-    "institution_ref",
-    "system_revision",
-    "milestone_ref",
-    "evidence_digest",
-    "decision"
-  ],
   "time_format": "ISO 8601 with offset",
+  "digest_format": "sha256 hex (64 chars, lowercase)",
+  "raw_data_policy": "平台不接收原始业务数据；写入载荷递归扫描到原始字段名（raw/raw_data/payload/records/rows/samples/content/trace/pcap/video/image/audio/dataset/trip_data/travel_data/plate/id_card）即返回 422 raw_data_rejected",
+  "roles": ["institution", "supplier", "administrator"],
+  "stages": {
+    "demo": "展品",
+    "pilot": "试点",
+    "deployment": "部署",
+    "acceptance": "正式验收"
+  },
+  "round_statuses": ["open", "passed", "failed", "invalidated"],
+  "required_fields": {
+    "party": ["ref", "name", "role"],
+    "project": ["project_ref", "name", "domain", "stage", "institution_ref", "supplier_ref"],
+    "revision": ["version_label", "applicability"],
+    "baseline": ["requirements", "data_summary"],
+    "environment": ["language", "network", "infrastructure"],
+    "milestone": ["code", "title"],
+    "metric": ["metric_code", "name", "operator", "threshold"],
+    "round_open": ["milestone_code", "base_revision_id"],
+    "evidence": ["kind", "label", "digest", "controlled_ref"],
+    "conclusion": ["measured"]
+  },
+  "metric_operators": [">=", "<=", ">", "<", "="],
+  "rules": [
+    "指标必须 institution 与 supplier 双方同意后才能提交结论",
+    "失败轮次冻结，重测另开新轮次",
+    "登记新系统版本会使该项目全部 open 轮次转为 invalidated",
+    "证据摘要与轮次详情只对项目相关参与方与管理者可见",
+    "每个项目只属于 demo/pilot/deployment/acceptance 之一，组合视图四阶段分列"
+  ],
   "sample": {
-    "project_ref": "PROJECT-DEMO",
-    "institution_ref": "PARTNER-A",
-    "system_revision": 3,
+    "project_ref": "PROJECT-BKK",
+    "institution_ref": "PARTNER-TH",
+    "supplier_ref": "VENDOR-CN",
+    "stage": "pilot",
+    "system_revision": 1,
+    "milestone_code": "M1",
+    "round_no": 1,
+    "status": "open",
     "decision": "pending"
   }
 }
